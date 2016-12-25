@@ -1,0 +1,181 @@
+// multiple display modes for Trinket Neopixel goggle rings
+// adapted from MakerBlock's Trinket code at: 
+// https://github.com/MakerBlock/NeoPixel-Goggles/blob/master/NeoPixel_Goggles_000.ino
+// Jack Foust
+// foustja@gmail
+// 12/18/2016
+
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR_ATtiny85__ // Trinket, Gemma, etc.
+#include <avr/power.h>
+#endif
+
+#define PIN 0
+#define LED 1
+
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(32, PIN);
+
+int i;        // loop index   
+int j = 0;    // colorlist index
+int scanner1[] = {14,15, 0, 1,2,3,4,5,31,16,17,18,19,20,21,22}; 
+int scanner2[] = {13,12,11,10,9,8,7,6,30,29,28,27,26,25,24,23}; 
+int default_brightness = 16;  
+int change_modes_default_time = 8000;        // Time to change modes
+int speed_med = 40;
+int speed_slow = 50;
+uint8_t  mode   = 0;          // Current animation effect
+uint32_t color  = 0x3366ff;   // Start blue
+uint32_t colorlist[] = {0x3366ff,0x00ff00,0xff99ff}; 
+uint32_t t;           // elapsd time
+uint32_t prevTime;    // previous time
+uint32_t offset = 0;  // ring position
+
+void setup() 
+{
+  #ifdef __AVR_ATtiny85__ // Trinket, Gemma, etc.
+    if(F_CPU == 16000000) clock_prescale_set(clock_div_1);
+  #endif
+
+  pinMode(LED, OUTPUT);  //  Onboard LED
+  
+  pixels.begin();
+  pixels.setBrightness(default_brightness); 
+  prevTime = millis();
+}
+
+void loop() 
+{
+  switch(mode) 
+  {
+      //  Wave Scanner
+      case 0: wave_scanner_right(); wave_scanner_left(); break;
+  
+      //  Larson Scanner
+      case 1: larson_scanner(); break;
+  
+      // Spinny wheels (8 LEDs on at a time)
+      case 2: spin_wheels(); break;
+  
+      // Infinity Symbol
+      case 3: infinity_scanner(); break;
+  
+      // Random sparks - just one LED on at a time - all one color!
+      case 4: sparks(); break; 
+  
+      // Sirens
+      case 5: sirens(); break;
+  }
+  
+  t = millis();
+  if((t - prevTime) > change_modes_default_time) 
+  { 
+    // Every X seconds...
+    mode++;                        // Next mode
+    if(mode > 5) 
+    {  
+      mode = 0;                    // Start modes over
+      j++;                         // colorlist index
+      if (j > 2) j = 0;
+      color = colorlist[j];        // Next color
+    }
+    for(i=0; i<32; i++) pixels.setPixelColor(i, 0);
+    prevTime = t;
+    }
+}
+
+//  Wave Scanner, moving right
+void wave_scanner_right()
+{   
+  for (i=0;i<16;i++)
+    { 
+    pixels.setPixelColor(scanner1[i],color);
+    pixels.setPixelColor(scanner2[i],color);
+    pixels.show();
+    delay(speed_slow);
+    pixels.setPixelColor(scanner1[i],0);
+    pixels.setPixelColor(scanner2[i],0);
+    }
+  }
+
+//  Wave Scanner, moving left
+void wave_scanner_left()
+{
+  for (i=15;i>=0;i--)
+    { 
+    pixels.setPixelColor(scanner1[i],color);
+    pixels.setPixelColor(scanner2[i],color);
+    pixels.show();
+    delay(speed_slow);
+    pixels.setPixelColor(scanner1[i],0);
+    pixels.setPixelColor(scanner2[i],0);
+    }
+  }
+
+//  Larson Scanner
+void larson_scanner()
+{
+  int scanner[] = {13,5,30,23,23,30,5,13};  
+  
+  for(i=0;i<8;i++)
+  {
+    pixels.setPixelColor(scanner[i],color);
+    pixels.show();
+    delay(100);
+    pixels.setPixelColor(scanner[i],0);
+    pixels.show();
+   }
+ }
+
+void sparks()
+{
+  i = random(32);
+  pixels.setPixelColor(i, color);
+  pixels.show();
+  delay(20);
+  pixels.setPixelColor(i, 0);
+}
+
+void spin_wheels()
+{
+  for(i=0; i<16; i++) 
+  {
+    uint32_t c = 0;
+    
+    if(((offset + i) & 7) < 2) c = color; // 4 pixels on each ring
+    pixels.setPixelColor(   i, c);        // First eye
+    pixels.setPixelColor(31-i, c);        // Second eye (flipped)
+  }
+    pixels.show();
+    offset++;
+    if(offset > 15) offset = 0; // reset
+    delay(speed_slow);
+  }
+
+void infinity_scanner()
+{
+  for(i=0;i<32;i++)
+  {
+    int infinitypixels[] = {14,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,20,19,18,17,16,31,30,29,28,27,26,25,24,23,22,21};
+    pixels.setPixelColor(infinitypixels[i],color);
+    pixels.show();
+    delay(speed_med);
+    pixels.setPixelColor(infinitypixels[i],0);
+  }
+}
+
+void sirens()
+{
+  for(i=0; i<16; i++) 
+  {
+    uint32_t c = 0;
+    if(((offset + i) & 7) < 2) c = color;  
+    pixels.setPixelColor(   i, c);            // First eye
+    pixels.setPixelColor(31-i, c);            // Second eye (flipped)
+  }
+  pixels.show();
+  offset++;
+  if(offset > 15) offset = 0; // reset
+  delay(speed_slow);
+}
+
+
