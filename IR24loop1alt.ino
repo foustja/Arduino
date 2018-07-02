@@ -1,3 +1,19 @@
+//IR24loop1alt.ino
+//07/01/2018
+//Milton Foust
+//
+//Code has been tested successfully on the Arduino Leonardo and Adafruit Metro Mini, and
+//allows IR remote control of LEDs embedded in BlinkyTile PCBs (https://blinkinlabs.com/). 
+//Compiles and uploads with Arduino 1.8.5 running under Ubuntu 14.04.
+//
+//Credit needs to be given to to Daniel Garcia and Mark Kriegsman of the FastLED Project,
+//(http://fastled.io/) and Chris Young, the creator of IRLib2 (https://github.com/cyborg5/
+//IRLib2).
+//
+//I borrowed and re-worked a lot of code they provided, which saved me a great deal of time. 
+//Chris Young also has a great tutorial on IR communication at the Adafruit web site
+//(https://learn.adafruit.com/using-an-infrared-library/overview), which was invaluable to me.
+
 #include <IRLibAll.h>
 #include <DmxSimple.h>
 #include <FastLED.h>
