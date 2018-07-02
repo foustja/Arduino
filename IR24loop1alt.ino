@@ -1,6 +1,8 @@
 //IR24loop1alt.ino
+//https://github.com/foustja/Arduino/edit/master/IR24loop1alt.ino
 //07/01/2018
 //Milton Foust
+//foustja@gmail.com
 //
 //Code has been tested successfully on the Arduino Leonardo and Adafruit Metro Mini, and
 //allows IR remote control of LEDs embedded in BlinkyTile PCBs (https://blinkinlabs.com/). 
