@@ -1,0 +1,39 @@
+﻿Add user to dialout group:
+
+$ ls -l /dev/ttyUSB0
+crw-rw---- 1 root dialout 188, 0 2009-07-04 15:23 /dev/ttyUSB0
+$ sudo usermod -aG dialout <yourUserName>
+(or, equivalently)
+$ sudo usermod -a -G dialout <yourUserName>
+
+Change permissions:(may not be necessary if user is added to dialout group)
+
+sudo chmod 666 /dev/ttyACM0 (for serial or /dev/ttyUSB0 for usb)
+
+Remove modemmanager:
+
+$ sudo apt-get --purge remove modemmanager
+
+
+Uninstall brltty:
+(To remove just brltty package itself from Ubuntu 14.04 (Trusty Tahr) execute on terminal)
+
+sudo apt-get remove brltty
+
+
+Uninstall brltty and it's dependent packages:
+(To remove the brltty package and any other dependant package which are no longer needed from Ubuntu Trusty)
+
+sudo apt-get remove --auto-remove brltty
+
+
+Purging brltty:
+(If you also want to also delete configuration and/or data files of brltty from Ubuntu Trusty then this will work)
+
+sudo apt-get purge brltty
+
+Purging brltty and it's dependent packages:
+(To also delete configuration and/or data files of brltty and it's dependencies from Ubuntu Trusty then execute)
+
+sudo apt-get purge --auto-remove brltty
+
