@@ -8,3 +8,5 @@ sudo usermod -a -G dialout <username>
 Then log out and log in again.
 
 After that you should be able to upload without an error.
+
+Note also that the Trinket doesn't work with USB 3.0 - you'll need to connect it to a USB 2.0 in order to upload to it.
